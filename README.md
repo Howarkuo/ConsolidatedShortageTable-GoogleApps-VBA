@@ -26,6 +26,24 @@ Write one record into Movements:
 Current = Current + Column F Qty
 Movement = Current - Previous
 ```
+## UPDATED Flow and Functions
+```
+Subroutines (Sub)
+AddStatusColumnAfterP()
+ExpandQRowsToDemandSupplyBalance()
+SupplyWriteIn()
+FillBlanksWithZero()
+CalculateBalances()
+HighlightNegativeBalances()
+FillDown_ItemNo()
+InsertAndCalculate_ColumnR()
+Helper Functions (Function)
+ParseMD(txt) - converts MM/DD
+ParseYMD(txt) - YYYY/MM/DD
+
+```
+
+
 ## Performance Optimizations (Reducing Time Complexity)
 
 To handle massive datasets efficiently, the new VBA scripts were completely refactored to prioritize in-memory processing and bulk worksheet operations.
