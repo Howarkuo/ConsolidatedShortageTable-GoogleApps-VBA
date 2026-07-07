@@ -26,6 +26,28 @@ Write one record into Movements:
 Current = Current + Column F Qty
 Movement = Current - Previous
 ```
+## Performance Optimizations (Reducing Time Complexity)
+
+To handle massive datasets efficiently, the new VBA scripts were completely refactored to prioritize in-memory processing and bulk worksheet operations.
+
+### 1. $O(1)$ Header Evaluation vs. Nested Loops
+* **The Old Way:** Date headers were evaluated inside a nested loop for every row and then every column. For 1,000 rows and 26 columns, the script was forced to evaluate string parsing rules 26,000 times.
+* **The New Way:** Headers are read, precalculated, and stored into variables in memory **once**. The script then compares the parsed column directly against the memory array, drastically reducing execution time.
+
+### 2. In-Memory Array Processing
+* **Found in:** `CalculateBalances`, `FillPattern_FGH`, `InsertAndCalculate_ColumnR`
+* **Mechanism:** Reading and writing to individual worksheet cells is the slowest operation in VBA. Data is now sucked into memory blocks instantly using `arr = ws.Range(...).Value`, calculated at maximum CPU speed, and dumped back to the sheet in a single action.
+
+### 3. Stepped Looping (Jumping 3-Row Blocks)
+* **Found in:** `CalculateBalances`, `FillPattern_FGH`, `InsertAndCalculate_ColumnR`
+* **Mechanism:** Because the data is strictly grouped into 3-row blocks (*Demand, Supply, Balance*), loops now use `For i = 1 To UBound(data) Step 3`. This skips 2 out of every 3 rows. If the sheet has 30,000 rows, the code only performs 10,000 iterations.
+
+### 4. Bulk Object Manipulation ($O(1)$ Worksheet I/O)
+* **Filling Blanks:** (Found in `FillBlanksWithZero`, `FillDown_ItemNo`, `FillDown_SpecialCells_MultiCol`) Instead of iterating `If cell.Value = "" Then`, the scripts leverage Excel's native C++ backend via `.SpecialCells(xlCellTypeBlanks)` to fill all blank cells instantly.
+* **Formatting:** (Found in `HighlightNegativeBalances`) Instead of looping through rows to check if a number is negative and changing the `.Font.Color` one cell at a time, the code applies a **Conditional Formatting Rule** to the entire grid (`R7:AR[lastRow]`) at once. Excel is given the mathematical logic once:
+  ```excel
+  =AND(R7<0, MOD(ROW(),3)=1)
+
 
 ## VBA Usage Setup Instrutions
 
