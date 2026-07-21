@@ -7,8 +7,8 @@
 - Consolidated Shortage Table
 ##  Modules Sequences
 1. AddStatusColumnAfterP
-2.ExpandQRowsToDemandSupplyBalance
-3 FillDown_ItemNo, FillDown_SpecialCells_MultiCol, FillPattern_FGH, FillDown_SpecialCells_I_to_P
+2. ExpandQRowsToDemandSupplyBalance
+3. FillDown_ItemNo, FillDown_SpecialCells_MultiCol, FillPattern_FGH, FillDown_SpecialCells_I_to_P
 4. SupplyWriteIn
 5. InsertAndCalculate_ColumnR
 6. FillBlanksWithZero
